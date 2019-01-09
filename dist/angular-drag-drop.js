@@ -364,40 +364,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                minDistanceSq = distanceSq;
 	                            }
 	                        });
+				if (onDragOver) {
+				    onDragOver($scope, locals);
+				}
 
-	                        $scope.$apply(function() {
-	                            if (onDragOver) {
-	                                onDragOver($scope, locals);
-	                            }
+				if (!closestTarget) return;
 
-	                            if (!closestTarget) return;
+				if (closestTarget !== dropContainer.lastTarget) {
+				    if (dropContainer.lastTarget) {
+					$attrs.$removeClass(
+					    'drop-container-' +
+						dropContainer.lastTarget.anchor
+					);
+				    }
 
-	                            if (closestTarget !== dropContainer.lastTarget) {
-	                                if (dropContainer.lastTarget) {
-	                                    $attrs.$removeClass(
-	                                        'drop-container-' +
-	                                            dropContainer.lastTarget.anchor
-	                                    );
-	                                }
+				    $attrs.$addClass(
+					'drop-container-' + closestTarget.anchor
+				    );
 
-	                                $attrs.$addClass(
-	                                    'drop-container-' + closestTarget.anchor
-	                                );
+				    if (dropContainer.lastTarget) {
+					dropContainer.lastTarget.handleDragLeave(
+					    e,
+					    locals
+					);
+				    }
 
-	                                if (dropContainer.lastTarget) {
-	                                    dropContainer.lastTarget.handleDragLeave(
-	                                        e,
-	                                        locals
-	                                    );
-	                                }
+				    closestTarget.handleDragEnter(e, locals);
 
-	                                closestTarget.handleDragEnter(e, locals);
+				    dropContainer.lastTarget = closestTarget;
+				}
 
-	                                dropContainer.lastTarget = closestTarget;
-	                            }
+				closestTarget.handleDragOver(e);
 
-	                            closestTarget.handleDragOver(e);
-	                        });
+	                        $scope.$digest();
 	                    }
 	                }
 
